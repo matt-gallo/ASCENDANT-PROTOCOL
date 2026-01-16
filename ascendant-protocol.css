@@ -563,6 +563,62 @@ body {
 }
 
 /* =================================
+   STICKY NAVIGATION
+   ================================= */
+
+.sticky-nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(10, 10, 10, 0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--light-gray);
+    padding: 0;
+}
+
+.nav-container {
+    max-width: var(--container-max);
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 0;
+}
+
+.nav-item {
+    padding: 1.25rem 2rem;
+    font-family: var(--font-display);
+    font-size: 0.85rem;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-white);
+    text-decoration: none;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    transition: all var(--transition-smooth);
+    border-right: 1px solid var(--dark-gray);
+    white-space: nowrap;
+}
+
+.nav-item:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: var(--text-white);
+}
+
+.nav-home {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.25rem 1.5rem;
+}
+
+.nav-home svg {
+    width: 16px;
+    height: 16px;
+}
+
+/* =================================
    QUALIFICATION SECTION
    ================================= */
 
@@ -879,6 +935,21 @@ body {
 
     .reveal-prompt-text {
         font-size: 0.75rem;
+    }
+
+    .nav-container {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .nav-item {
+        padding: 1rem 1.5rem;
+        font-size: 0.75rem;
+        flex-shrink: 0;
+    }
+
+    .nav-home {
+        padding: 1rem 1.25rem;
     }
 
     .qual-point {
