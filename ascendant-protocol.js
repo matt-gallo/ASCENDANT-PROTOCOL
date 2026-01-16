@@ -26,18 +26,19 @@
     }
 
     /**
-     * Door crumbling effect on click
+     * Door crumbling effect on click anywhere
      */
     function initClickReveal() {
-        const revealButton = document.getElementById('revealButton');
         const doorLeft = document.querySelector('.door-left');
         const doorRight = document.querySelector('.door-right');
         const initialBranding = document.querySelector('.initial-branding');
         const revealedContent = document.querySelector('.revealed-content');
+        const heroSection = document.querySelector('.hero-beam');
 
-        if (!revealButton || !doorLeft || !doorRight || !initialBranding || !revealedContent) return;
+        if (!doorLeft || !doorRight || !initialBranding || !revealedContent || !heroSection) return;
 
-        revealButton.addEventListener('click', () => {
+        // Listen for clicks anywhere in the hero section
+        heroSection.addEventListener('click', () => {
             if (doorOpened) return;
 
             // Trigger crumbling animation
@@ -60,6 +61,9 @@
 
             doorOpened = true;
         });
+
+        // Also add cursor pointer style to hero when doors are closed
+        heroSection.style.cursor = 'pointer';
     }
 
     /**
