@@ -21,6 +21,9 @@
      * Initialize all animations
      */
     function init() {
+        // Lock scrolling until door is opened
+        document.body.style.overflow = 'hidden';
+
         initClickReveal();
         initIntersectionObserver();
     }
@@ -47,6 +50,9 @@
 
             // Fade out branding
             initialBranding.classList.add('fade-out');
+
+            // Enable scrolling
+            document.body.style.overflow = 'auto';
 
             // Show revealed content after brief delay
             setTimeout(() => {
