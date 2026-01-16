@@ -8,8 +8,6 @@
 
     // Configuration
     const CONFIG = {
-        doorOpenThreshold: 100, // pixels to scroll before opening
-        contentReleaseThreshold: 300, // pixels to scroll before content becomes scrollable
         observerOptions: {
             threshold: 0.1,
             rootMargin: '0px 0px -100px 0px'
@@ -18,48 +16,49 @@
 
     // State
     let doorOpened = false;
-    let contentReleased = false;
 
     /**
      * Initialize all animations
      */
     function init() {
-        initDoorOpening();
+        initClickReveal();
         initIntersectionObserver();
     }
 
     /**
-     * Door opening effect on scroll
+     * Door crumbling effect on click
      */
-    function initDoorOpening() {
+    function initClickReveal() {
+        const revealButton = document.getElementById('revealButton');
         const doorLeft = document.querySelector('.door-left');
         const doorRight = document.querySelector('.door-right');
         const initialBranding = document.querySelector('.initial-branding');
         const revealedContent = document.querySelector('.revealed-content');
-        const heroSection = document.querySelector('.hero-beam');
 
-        if (!doorLeft || !doorRight || !initialBranding || !revealedContent) return;
+        if (!revealButton || !doorLeft || !doorRight || !initialBranding || !revealedContent) return;
 
-        window.addEventListener('scroll', () => {
-            const scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
+        revealButton.addEventListener('click', () => {
+            if (doorOpened) return;
 
-            // Open doors
-            if (!doorOpened && scrollPosition > CONFIG.doorOpenThreshold) {
-                doorLeft.classList.add('open');
-                doorRight.classList.add('open');
-                initialBranding.classList.add('fade-out');
+            // Trigger crumbling animation
+            doorLeft.classList.add('crumbling');
+            doorRight.classList.add('crumbling');
+
+            // Fade out branding
+            initialBranding.classList.add('fade-out');
+
+            // Show revealed content after brief delay
+            setTimeout(() => {
                 revealedContent.classList.add('visible');
-                doorOpened = true;
-            }
 
-            // Release content to scroll naturally
-            if (!contentReleased && scrollPosition > CONFIG.contentReleaseThreshold) {
-                revealedContent.style.position = 'absolute';
-                revealedContent.style.top = '0';
-                doorLeft.style.position = 'absolute';
-                doorRight.style.position = 'absolute';
-                contentReleased = true;
-            }
+                // After animation, remove doors from DOM
+                setTimeout(() => {
+                    doorLeft.style.display = 'none';
+                    doorRight.style.display = 'none';
+                }, 1200);
+            }, 300);
+
+            doorOpened = true;
         });
     }
 
