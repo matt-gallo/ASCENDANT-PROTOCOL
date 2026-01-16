@@ -73,7 +73,7 @@
     function initIntersectionObserver() {
         // Elements to observe
         const observeElements = document.querySelectorAll(
-            '.qual-point, .protocol-phase, .framework-content, .cta-content'
+            '.qual-point, .phase-layout, .framework-content, .cta-content'
         );
 
         if (!observeElements.length) return;
@@ -88,12 +88,17 @@
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    // Trigger animation
-                    requestAnimationFrame(() => {
-                        entry.target.style.transition = 'all 1s cubic-bezier(0.4, 0, 0.2, 1)';
-                        entry.target.style.opacity = '1';
-                        entry.target.style.transform = 'translateY(0)';
-                    });
+                    // For phase layouts, add class (CSS handles animation)
+                    if (entry.target.classList.contains('phase-layout')) {
+                        entry.target.classList.add('in-view');
+                    } else {
+                        // For other elements, use inline styles
+                        requestAnimationFrame(() => {
+                            entry.target.style.transition = 'all 1s cubic-bezier(0.4, 0, 0.2, 1)';
+                            entry.target.style.opacity = '1';
+                            entry.target.style.transform = 'translateY(0)';
+                        });
+                    }
 
                     // Unobserve after animation
                     observer.unobserve(entry.target);

@@ -657,24 +657,65 @@ body {
     margin: 0 auto;
 }
 
-.protocol-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: var(--spacing-lg);
-    margin-top: var(--spacing-xl);
+/* Phase Layout - Side by Side */
+.phase-layout {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xl);
+    margin-bottom: var(--spacing-xl);
+    padding: var(--spacing-xl) 0;
+    opacity: 0;
+    transform: translateY(50px);
+    transition: opacity 1.2s ease, transform 1.2s ease;
 }
 
-.protocol-phase {
-    padding: var(--spacing-lg);
-    border: 1px solid var(--light-gray);
-    background-color: var(--dark-gray);
-    transition: all var(--transition-smooth);
+.phase-layout.in-view {
+    opacity: 1;
+    transform: translateY(0);
 }
 
-.protocol-phase:hover {
-    border-color: var(--text-white);
-    transform: translateY(-5px);
-    box-shadow: 0 10px 40px rgba(255, 255, 255, 0.05);
+/* Reverse layout for alternating sides */
+.phase-reverse {
+    flex-direction: row-reverse;
+}
+
+/* Phase Content (Text) */
+.phase-content {
+    flex: 1;
+    max-width: 500px;
+}
+
+/* Phase Visual (Imagery) */
+.phase-visual {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+}
+
+.phase-svg {
+    width: 100%;
+    max-width: 400px;
+    height: auto;
+    filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.1));
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+    .phase-layout,
+    .phase-reverse {
+        flex-direction: column;
+        gap: var(--spacing-md);
+    }
+
+    .phase-visual {
+        min-height: 300px;
+    }
+
+    .phase-svg {
+        max-width: 300px;
+    }
 }
 
 .phase-number {
@@ -686,17 +727,18 @@ body {
     margin-bottom: var(--spacing-sm);
 }
 
-.protocol-phase h3 {
+.phase-content h3 {
     font-family: var(--font-display);
-    font-size: 1.5rem;
+    font-size: 2rem;
     font-weight: 600;
     letter-spacing: 0.05em;
     margin-bottom: var(--spacing-sm);
 }
 
-.protocol-phase p {
+.phase-description {
     color: var(--text-gray);
-    line-height: 1.7;
+    line-height: 1.8;
+    font-size: 1.1rem;
     margin-bottom: var(--spacing-md);
 }
 
