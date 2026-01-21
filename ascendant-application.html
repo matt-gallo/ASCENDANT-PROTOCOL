@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Ascendant Protocol Application – intentional continuation form">
+    <title>Ascendant Protocol Application</title>
+    <link rel="stylesheet" href="ascendant-protocol.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="application-body">
+    <div class="application-shell">
+        <header class="application-nav">
+            <div class="application-brand">
+                <div class="application-logo-circle">
+                    <svg viewBox="0 0 100 100" class="circle-svg" aria-hidden="true">
+                        <circle cx="50" cy="50" r="48"
+                                fill="none"
+                                stroke="rgba(255,255,255,0.4)"
+                                stroke-width="0.5"
+                                stroke-dasharray="90 10"/>
+                    </svg>
+                </div>
+                <div class="brand-text">ASCENDANT PROTOCOL</div>
+            </div>
+            <a class="back-link" href="ascendant-protocol.html">Return to main page</a>
+        </header>
+
+        <main>
+            <section class="application-section" id="apply">
+                <div class="container">
+                    <div class="application-header">
+                        <p class="eyebrow">Self-Disqualification Protocol</p>
+                        <h2>Application for Intentional Continuation</h2>
+                        <div class="guidance-panel">
+                            <p>This process exists for your reflection. Nothing you enter will be evaluated, scored, or used to persuade you. Continue only if you are prepared to look directly at your own patterns.</p>
+                            <ul class="guidance-list">
+                                <li>You are not being evaluated and no one will review these scores.</li>
+                                <li>The purpose is to help you decide whether to proceed.</li>
+                                <li>Respond instinctively. There are no right answers.</li>
+                                <li>You may stop at any time.</li>
+                            </ul>
+                            <div class="scale-legend">
+                                <span>1 = not true at all</span>
+                                <span>10 = completely true</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <form id="ascendantApplication" class="application-form" novalidate>
+                        <div class="question-steps" aria-live="polite"></div>
+
+                        <div class="final-warning" aria-live="polite">
+                            <h3>Before you continue</h3>
+                            <p>Pause here. Re-read what you entered. If anything feels unstable, stay with it before you move forward. No one is coming to validate, rescue, or reassure you.</p>
+                            <button type="button" class="btn-primary-large complete-application" disabled>Complete Application</button>
+                        </div>
+
+                        <div class="submission-feedback" aria-live="polite">
+                            <p>Take a moment before continuing. If any of your answers surprised you, sit with that. You are not required to proceed.</p>
+                        </div>
+                    </form>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="ascendant-protocol.js"></script>
+</body>
+</html>

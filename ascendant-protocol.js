@@ -17,15 +17,50 @@
     // State
     let doorOpened = false;
 
+    const APPLICATION_QUESTIONS = [
+        { id: 'readiness_1', section: 'Readiness & Agency', statement: 'I take responsibility for the current state of my life and health.' },
+        { id: 'readiness_2', section: 'Readiness & Agency', statement: 'I believe I have agency even when circumstances are difficult.' },
+        { id: 'readiness_3', section: 'Readiness & Agency', statement: 'I am willing to act without guarantees.' },
+        { id: 'readiness_4', section: 'Readiness & Agency', statement: 'I do not expect anyone else to motivate or rescue me.' },
+        { id: 'readiness_5', section: 'Readiness & Agency', statement: 'Discomfort does not automatically mean something is wrong.' },
+        { id: 'authority_1', section: 'Authority & Independent Thought', statement: 'I am comfortable questioning experts, institutions, and consensus views.' },
+        { id: 'authority_2', section: 'Authority & Independent Thought', statement: 'I trust my lived experience as a valid source of information.' },
+        { id: 'authority_3', section: 'Authority & Independent Thought', statement: 'I have changed my mind about something important in recent years.' },
+        { id: 'authority_4', section: 'Authority & Independent Thought', statement: 'I can tolerate uncertainty without rushing to certainty.' },
+        { id: 'authority_5', section: 'Authority & Independent Thought', statement: 'I do not confuse compliance with safety.' },
+        { id: 'comfort_1', section: 'Comfort, Identity & Attachment', statement: 'I suspect some of my habits are harming me.' },
+        { id: 'comfort_2', section: 'Comfort, Identity & Attachment', statement: 'I continue certain behaviors even though I know they don\'t serve me.' },
+        { id: 'comfort_3', section: 'Comfort, Identity & Attachment', statement: 'I am willing to question parts of my identity if necessary.' },
+        { id: 'comfort_4', section: 'Comfort, Identity & Attachment', statement: 'I do not need to be right to feel secure.' },
+        { id: 'comfort_5', section: 'Comfort, Identity & Attachment', statement: 'I am open to dismantling patterns before replacing them.' },
+        { id: 'pattern_1', section: 'Pattern Awareness & Responsibility', statement: 'I can identify repeating patterns in my life.' },
+        { id: 'pattern_2', section: 'Pattern Awareness & Responsibility', statement: 'I am willing to examine my role in outcomes I don\'t like.' },
+        { id: 'pattern_3', section: 'Pattern Awareness & Responsibility', statement: 'I notice when I rationalize behavior instead of changing it.' },
+        { id: 'pattern_4', section: 'Pattern Awareness & Responsibility', statement: 'I can sit with uncomfortable truths without avoiding them.' },
+        { id: 'pattern_5', section: 'Pattern Awareness & Responsibility', statement: 'I do not need to be a victim to feel justified.' },
+        { id: 'selection_1', section: 'Explicit Self-Selection', statement: 'I understand this is not medical care or therapy.' },
+        { id: 'selection_2', section: 'Explicit Self-Selection', statement: 'I am not looking to be told what to do.' },
+        { id: 'selection_3', section: 'Explicit Self-Selection', statement: 'I understand there are no guaranteed outcomes.' },
+        { id: 'selection_4', section: 'Explicit Self-Selection', statement: 'I am prepared for my beliefs to be challenged.' },
+        { id: 'selection_5', section: 'Explicit Self-Selection', statement: 'I am choosing this voluntarily, not out of fear or desperation.' },
+        { id: 'commitment', section: 'Commitment', statement: 'Knowing everything above, how committed are you to proceeding anyway?' }
+    ];
+
     /**
      * Initialize all animations
      */
     function init() {
-        // Lock scrolling until door is opened
-        document.body.style.overflow = 'hidden';
+        const heroSection = document.querySelector('.hero-beam');
 
-        initClickReveal();
+        if (heroSection) {
+            document.body.style.overflow = 'hidden';
+            initClickReveal();
+        } else {
+            document.body.style.overflow = 'auto';
+        }
+
         initIntersectionObserver();
+        initApplicationForm();
     }
 
     /**
@@ -37,28 +72,24 @@
         const initialBranding = document.querySelector('.initial-branding');
         const revealedContent = document.querySelector('.revealed-content');
         const heroSection = document.querySelector('.hero-beam');
+        const revealPrompt = document.querySelector('.reveal-prompt');
 
         if (!doorLeft || !doorRight || !initialBranding || !revealedContent || !heroSection) return;
 
-        // Listen for clicks anywhere in the hero section
-        heroSection.addEventListener('click', () => {
+        const openPassage = (event) => {
             if (doorOpened) return;
+            if (event && event.target.closest('a')) {
+                event.preventDefault();
+            }
 
-            // Trigger crumbling animation
             doorLeft.classList.add('crumbling');
             doorRight.classList.add('crumbling');
-
-            // Fade out branding
             initialBranding.classList.add('fade-out');
-
-            // Enable scrolling
             document.body.style.overflow = 'auto';
 
-            // Show revealed content after brief delay
             setTimeout(() => {
                 revealedContent.classList.add('visible');
 
-                // After animation, remove doors from DOM
                 setTimeout(() => {
                     doorLeft.style.display = 'none';
                     doorRight.style.display = 'none';
@@ -66,9 +97,12 @@
             }, 300);
 
             doorOpened = true;
-        });
+        };
 
-        // Also add cursor pointer style to hero when doors are closed
+        [heroSection, doorLeft, doorRight, initialBranding, revealPrompt]
+            .filter(Boolean)
+            .forEach(target => target.addEventListener('click', openPassage));
+
         heroSection.style.cursor = 'pointer';
     }
 
@@ -156,6 +190,186 @@
             // Subtle parallax movement (very gentle)
             beamGlow.style.transform = `translate(-50%, ${scrolled * parallaxSpeed}px)`;
         });
+    }
+
+    /**
+     * Build and manage the self-disqualification application
+     */
+    function initApplicationForm() {
+        const form = document.getElementById('ascendantApplication');
+        if (!form) return;
+
+        const stepsContainer = form.querySelector('.question-steps');
+        if (!stepsContainer) return;
+
+        const finalWarning = form.querySelector('.final-warning');
+        const completeButton = form.querySelector('.complete-application');
+        const feedback = form.querySelector('.submission-feedback');
+        const steps = [];
+
+        APPLICATION_QUESTIONS.forEach((question, index) => {
+            const step = document.createElement('div');
+            step.className = 'question-step';
+            step.dataset.stepIndex = index;
+            step.dataset.questionId = question.id;
+
+            if (index === 0) {
+                step.classList.add('active');
+            }
+
+            const label = `${question.section} question ${index + 1}`;
+            step.innerHTML = `
+                <div class="step-header">
+                    <p class="block-label">${question.section}</p>
+                    <p class="step-counter">${index + 1} / ${APPLICATION_QUESTIONS.length}</p>
+                </div>
+                <p class="step-statement">${question.statement}</p>
+                <div class="rating-scale" role="radiogroup" aria-label="${label}" data-input="${question.id}"></div>
+            `;
+
+            stepsContainer.appendChild(step);
+            steps.push(step);
+
+            const hiddenInput = document.createElement('input');
+            hiddenInput.type = 'hidden';
+            hiddenInput.name = question.id;
+            hiddenInput.id = question.id;
+            hiddenInput.className = 'question-input';
+            form.appendChild(hiddenInput);
+        });
+
+        buildRatingScales(form);
+
+        let finalWarningShown = false;
+
+        form.addEventListener('click', (event) => {
+            const target = event.target;
+            if (!target.classList.contains('rating-option') || target.disabled) return;
+
+            event.preventDefault();
+
+            const scale = target.closest('.rating-scale');
+            if (!scale) return;
+
+            const inputId = scale.dataset.input;
+            if (!inputId) return;
+
+            const hiddenInput = form.querySelector(`#${inputId}`);
+            if (!hiddenInput) return;
+
+            selectScaleValue(scale, target, hiddenInput);
+            handleStepProgress(scale);
+        });
+
+        form.addEventListener('keydown', (event) => {
+            const target = event.target;
+            if (!target.classList.contains('rating-option')) return;
+
+            const scale = target.closest('.rating-scale');
+            if (!scale) return;
+
+            let nextValue;
+            if (event.key === 'ArrowRight' || event.key === 'ArrowUp') {
+                nextValue = Math.min(10, Number(target.dataset.value) + 1);
+            } else if (event.key === 'ArrowLeft' || event.key === 'ArrowDown') {
+                nextValue = Math.max(1, Number(target.dataset.value) - 1);
+            } else {
+                return;
+            }
+
+            event.preventDefault();
+
+            const nextOption = scale.querySelector(`.rating-option[data-value="${nextValue}"]`);
+            if (nextOption && !nextOption.disabled) {
+                nextOption.focus();
+                const inputId = scale.dataset.input;
+                const hiddenInput = form.querySelector(`#${inputId}`);
+                if (hiddenInput) {
+                    selectScaleValue(scale, nextOption, hiddenInput);
+                    handleStepProgress(scale);
+                }
+            }
+        });
+
+        if (completeButton) {
+            completeButton.addEventListener('click', () => {
+                completeButton.disabled = true;
+                completeButton.textContent = 'Application Recorded';
+                form.querySelectorAll('.rating-option').forEach((option) => {
+                    option.disabled = true;
+                });
+
+                if (feedback) {
+                    feedback.classList.add('visible');
+                }
+            });
+        }
+
+        function handleStepProgress(scale) {
+            const step = scale.closest('.question-step');
+            if (!step || step.classList.contains('completed')) return;
+
+            step.classList.remove('active');
+            step.classList.add('completed');
+
+            const nextIndex = Number(step.dataset.stepIndex) + 1;
+            const nextStep = steps[nextIndex];
+
+            if (nextStep) {
+                nextStep.classList.add('active');
+                nextStep.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            } else if (finalWarning && !finalWarningShown) {
+                finalWarning.classList.add('visible');
+                finalWarning.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                if (completeButton) {
+                    completeButton.disabled = false;
+                }
+                finalWarningShown = true;
+            }
+        }
+    }
+
+    /**
+     * Generate the 1-10 button set for each scale container
+     */
+    function buildRatingScales(form) {
+        const scales = form.querySelectorAll('.rating-scale');
+        if (!scales.length) return;
+
+        scales.forEach((scale) => {
+            if (scale.querySelector('.rating-option')) return;
+
+            const inputId = scale.dataset.input;
+
+            for (let value = 1; value <= 10; value += 1) {
+                const button = document.createElement('button');
+                button.type = 'button';
+                button.className = 'rating-option';
+                button.dataset.value = String(value);
+                button.textContent = String(value);
+                button.setAttribute('role', 'radio');
+                button.setAttribute('aria-checked', 'false');
+                button.setAttribute('aria-label', `${value} on the scale`);
+                button.dataset.inputTarget = inputId || '';
+                scale.appendChild(button);
+            }
+        });
+    }
+
+    /**
+     * Handle selection state and persistence for a single scale
+     */
+    function selectScaleValue(scale, button, hiddenInput) {
+        const value = button.dataset.value;
+        if (!value) return;
+
+        scale.querySelectorAll('.rating-option').forEach((option) => {
+            option.classList.toggle('selected', option === button);
+            option.setAttribute('aria-checked', option === button ? 'true' : 'false');
+        });
+
+        hiddenInput.value = value;
+        scale.dataset.selected = value;
     }
 
     /**
